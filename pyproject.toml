@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yt-dlp-gui"
+version = "2026.05.20"
+description = "Modern minimalist GUI for yt-dlp"
+requires-python = ">=3.10"
+dependencies = [
+    "PySide6>=6.6",
+    "yt-dlp>=2024.0",
+]
+
+[project.scripts]
+yt-dlp-gui = "yt_dlp_gui:main"
