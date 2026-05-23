@@ -1,27 +1,14 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg
-*.egg-info/
+*.pyc
+*.pyo
 dist/
 build/
 *.spec
-*.spec.bak
-
-# Virtual environments
+*.egg-info/
 .venv/
 venv/
-env/
-
-# IDE
 .vscode/
 .idea/
-
-# OS
 .DS_Store
 Thumbs.db
-
-# Config (user-specific)
 config.json

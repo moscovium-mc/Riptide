@@ -1,60 +1,76 @@
-# yt-dlp GUI
+# Riptide YouTube Downloader V1.0.0
 
-A modern, minimalist GUI for [yt-dlp](https://github.com/yt-dlp/yt-dlp) built with PySide6.
+fast youtube video/audio downloader with ffmpeg support. built on top of yt-dlp with a clean PySide6 GUI.
 
-## Features
+also doubles as a media trimmer - cut videos and audio files using ffmpeg without leaving the app.
 
-- **Video & Audio Downloads**: Select quality, format, and output directory
-- **Metadata Embedding**: Auto-embed cover art, title, artist, and more into MP3/MP4/M4A
-- **Metadata Preview**: Fetch title, thumbnail, and duration before downloading
-- **Download Queue**: Add multiple URLs and download them sequentially
-- **Drag & Drop**: Drag URLs from your browser directly into the app
-- **Filename Templates**: Choose from presets or define custom naming patterns
-- **Settings Persistence**: Your preferences are saved automatically between sessions
-- **FFmpeg Auto-Detection**: Automatically finds FFmpeg on your system
+## what it does
 
-## Requirements
+- download videos or extract audio (mp3, aac, flac, opus, wav, m4a)
+- auto-embed metadata + cover art into output files
+- preview title, artist, duration, and thumbnail before downloading
+- queue multiple urls for sequential downloads
+- drag urls from browser directly into the window
+- pick filename patterns from presets or roll your own
+- trim/cut local media files with ffmpeg (copy codecs, re-encode, or audio-only)
+- settings stick around between sessions
+- hunts down ffmpeg automatically so audio conversion just works
 
-- **Python 3.10+** (for source builds)
-- **FFmpeg** (required for audio extraction and metadata embedding)
+## requirements
 
-## Installation
+- python 3.10+ (source only)
+- ffmpeg (needed for audio extraction, metadata embedding, and media trimming)
 
-### Option 1: Standalone Executable (Windows)
-Download `yt-dlp-gui.exe` from the [Releases](https://github.com/YOUR_USERNAME/yt-dlp-gui/releases) page. No installation required.
+## install
 
-### Option 2: From Source
-```bash
-git clone https://github.com/YOUR_USERNAME/yt-dlp-gui.git
-cd yt-dlp-gui
+### standalone exe (windows)
+grab `riptide.exe` from the releases page. no install needed.
+
+### from source
+```
+git clone https://github.com/moscovium-mc/riptide.git
+cd riptide
 pip install -r requirements.txt
-python -m yt_dlp_gui
+python -m riptide
 ```
 
-### Option 3: Build Your Own Executable
-```bash
+### build your own exe
+```
 pip install pyinstaller
 python build.py
 ```
-The executable will be in `dist/yt-dlp-gui.exe`.
+exe drops into `dist/riptide.exe`
 
-## FFmpeg Setup
+## ffmpeg setup
 
-FFmpeg is required for audio extraction and metadata embedding. The app auto-detects it if:
-- It's in your system `PATH`
-- Located at `~/Desktop/FFmpeg/ffmpeg.exe` or `~/Desktop/FFmpeg/bin/ffmpeg.exe`
+riptide looks for ffmpeg in these spots:
+- system `PATH`
+- `~/Desktop/FFmpeg/ffmpeg.exe`
+- `~/Desktop/FFmpeg/bin/ffmpeg.exe`
 
-Download FFmpeg from: https://ffmpeg.org/download.html
+grab it from https://ffmpeg.org/download.html
 
-## Usage
+## usage
 
-1. Paste a video/playlist URL
-2. Choose **Video** or **Audio** mode
-3. Select format/quality
-4. (Optional) Click **Fetch Info** to preview metadata
-5. Click **Add** to queue, or download directly
-6. Click **START** to begin downloading
+### download
+1. paste a video/playlist url
+2. pick video or audio mode
+3. choose format/quality
+4. hit **Fetch Info** to preview metadata (optional)
+5. **Add** to queue or download straight away
+6. **START**
 
-## License
+### trim / cut media
+1. **Tools > Trim / Cut Media**
+2. browse for a video or audio file
+3. click **Load Info** to probe duration and codec info
+4. set start and end times (HH:MM:SS)
+5. pick a mode:
+   - **Copy codecs** - fast, no quality loss, stream copy
+   - **Re-encode** - h.264 video + aac audio, wide compatibility
+   - **Audio only** - strips video, encodes to selected format
+6. hit **TRIM**
+
+## license
 
 MIT

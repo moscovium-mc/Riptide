@@ -1,18 +1,20 @@
-"""Application constants, settings persistence, and FFmpeg detection."""
-
 import json
 import os
 import shutil
 import subprocess
 from pathlib import Path
 
-APP_NAME = "yt-dlp GUI"
-APP_VERSION = "2026.05.20"
-CONFIG_DIR = Path.home() / ".config" / "yt-dlp-gui"
+from riptide._version import __version__ as APP_VERSION
+
+APP_NAME = "Riptide YouTube Downloader"
+
+# user config persists across launches
+CONFIG_DIR = Path.home() / ".config" / "riptide"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
 DEFAULT_DOWNLOAD_DIR = str(Path.home() / "Downloads")
 
+# format strings yt-dlp understands
 VIDEO_FORMATS = {
     "Best": "bv*+ba/b",
     "Best Video": "bv*",
@@ -32,10 +34,18 @@ AUDIO_FORMATS = {
     "M4A": ("m4a", "192"),
 }
 
-DEFAULT_SETTINGS = {
+FILENAME_TEMPLATES = {
+    "Default": "%(title)s [%(id)s].%(ext)s",
+    "Artist - Title": "%(artist)s - %(title)s.%(ext)s",
+    "Title Only": "%(title)s.%(ext)s",
+    "ID Only": "%(id)s.%(ext)s",
+    "Playlist Order": "%(playlist_index)s - %(title)s.%(ext)s",
+    "Custom": "",
+}
+
+DEFAULTS = {
     "mode": "video",
     "format": "Best",
-    "audio_format": "MP3",
     "audio_quality": 192,
     "output_dir": DEFAULT_DOWNLOAD_DIR,
     "naming_template": "Default",
@@ -47,53 +57,47 @@ DEFAULT_SETTINGS = {
 
 
 def load_settings():
-    """Load settings from config.json, merging with defaults."""
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    settings = DEFAULT_SETTINGS.copy()
+    out = DEFAULTS.copy()
     if CONFIG_FILE.exists():
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-                saved = json.load(f)
-            settings.update(saved)
+                out.update(json.load(f))
         except (json.JSONDecodeError, OSError):
             pass
-    return settings
+    return out
 
 
-def save_settings(settings):
-    """Persist settings to config.json."""
+def save_settings(cfg):
     try:
         with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-            json.dump(settings, f, indent=2)
+            json.dump(cfg, f, indent=2)
     except OSError:
         pass
 
 
-def find_ffmpeg(custom_path=""):
-    """Locate ffmpeg binary. Returns path or None."""
-    candidates = []
-    if custom_path and os.path.isfile(custom_path):
-        candidates.append(custom_path)
-    candidates.extend([
+def find_ffmpeg(custom=""):
+    if custom and os.path.isfile(custom):
+        return custom
+
+    candidates = [
         "ffmpeg",
         str(Path.home() / "Desktop" / "FFmpeg" / "ffmpeg.exe"),
         str(Path.home() / "Desktop" / "FFmpeg" / "bin" / "ffmpeg.exe"),
         str(Path.home() / "Desktop" / "FFmpeg" / "ffmpeg"),
         str(Path.home() / "Desktop" / "FFmpeg" / "bin" / "ffmpeg"),
-    ])
-    for path in candidates:
-        if shutil.which(path) or os.path.isfile(path):
-            return path if os.path.isfile(path) else shutil.which(path)
+    ]
+
+    for p in candidates:
+        resolved = shutil.which(p) or p
+        if os.path.isfile(resolved):
+            return resolved
     return None
 
 
-def get_ffmpeg_version(ffmpeg_path):
-    """Return ffmpeg version string or None."""
+def get_ffmpeg_version(path):
     try:
-        result = subprocess.run(
-            [ffmpeg_path, "-version"],
-            capture_output=True, text=True, timeout=5
-        )
-        return result.stdout.splitlines()[0] if result.returncode == 0 else None
+        r = subprocess.run([path, "-version"], capture_output=True, text=True, timeout=5)
+        return r.stdout.splitlines()[0] if r.returncode == 0 else None
     except Exception:
         return None

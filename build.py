@@ -1,54 +1,46 @@
-"""Build script for PyInstaller. Creates a standalone executable."""
+"""build standalone exe with pyinstaller. output lands in dist/"""
 
-import os
 import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-APP_NAME = "yt-dlp-gui"
-DIST_DIR = Path("dist")
-BUILD_DIR = Path("build")
-SPEC_FILE = f"{APP_NAME}.spec"
+NAME = "riptide"
+DIST = Path("dist")
+BUILD = Path("build")
 
 
 def clean():
-    """Remove old build artifacts."""
-    for d in [DIST_DIR, BUILD_DIR]:
+    for d in (DIST, BUILD):
         if d.exists():
             shutil.rmtree(d)
-    if Path(SPEC_FILE).exists():
-        Path(SPEC_FILE).unlink()
-    print("Cleaned old build artifacts.")
+    spec = Path(f"{NAME}.spec")
+    if spec.exists():
+        spec.unlink()
+    print("cleaned old artifacts")
 
 
 def build():
-    """Run PyInstaller to create the executable."""
     cmd = [
         sys.executable, "-m", "PyInstaller",
-        "--name", APP_NAME,
+        "--name", NAME,
         "--onefile",
         "--windowed",
         "--noconfirm",
-        "--add-data", "yt_dlp_gui/config.py;yt_dlp_gui",
-        "yt_dlp_gui/__main__.py",
+        "--collect-all", "yt_dlp",
+        "riptide/__main__.py",
     ]
-    print(f"Running: {' '.join(cmd)}")
+    print(f"running: {' '.join(cmd)}")
     subprocess.run(cmd, check=True)
 
 
-def main():
-    print("Building yt-dlp GUI...")
+if __name__ == "__main__":
+    print("building riptide...")
     clean()
     build()
-    exe_path = DIST_DIR / f"{APP_NAME}.exe"
-    if exe_path.exists():
-        size_mb = exe_path.stat().st_size / (1024 * 1024)
-        print(f"\nSuccess! Executable created: {exe_path.resolve()}")
-        print(f"Size: {size_mb:.1f} MB")
+    exe = DIST / f"{NAME}.exe"
+    if exe.exists():
+        mb = exe.stat().st_size / (1024 * 1024)
+        print(f"\ndone -> {exe.resolve()} ({mb:.1f} MB)")
     else:
-        print("Build failed. Check output for errors.")
-
-
-if __name__ == "__main__":
-    main()
+        print("build failed, check output above")

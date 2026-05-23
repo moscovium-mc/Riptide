@@ -1,17 +1,15 @@
-"""yt-dlp GUI - Modern minimalist GUI for yt-dlp."""
-
-__version__ = "2026.05.20"
+from riptide._version import __version__
 
 
 def main():
     import sys
     from PySide6.QtWidgets import QApplication
-    from yt_dlp_gui.window import MainWindow
+    from riptide.window import MainWindow
 
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
-    window = MainWindow()
-    window.show()
+    w = MainWindow()
+    w.show()
     sys.exit(app.exec())
 
 
