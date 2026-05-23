@@ -1,6 +1,6 @@
 # Riptide YouTube Downloader V1.0.0
 
-fast youtube video/audio downloader with ffmpeg support. built on top of yt-dlp with a clean PySide6 GUI.
+fast youtube video/audio downloader with ffmpeg support. built on top of yt-dlp with GUI.
 
 also doubles as a media trimmer - cut videos and audio files using ffmpeg without leaving the app.
 
